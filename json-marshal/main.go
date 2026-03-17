@@ -8,32 +8,43 @@ import (
 	"net/http"
 )
 
-func main() {
-	protocol := "http"
-	domain := "www.google.com"
-	path := "/robots.txt"
+type listEntry struct {
+	name string
+	url string
+}
 
-	url := fmt.Sprintf(
-		"%s://%s%s",
-		protocol,
-		domain,
-		path,
-	)
+type listResponse struct{
+	next string
+	previous string
+	results []listEntry
+}
+
+func main() {
+	url := "https://pokeapi.co/api/v2/location-area/"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
+	if err != nil {
+		log.Fatal("error while reading body: %s", err)
+	}
+	
+	decoder := json.NewDecoder(res.Body)
+	var results listResponse
+	
+	err = decoder.Decode(&results)
+	if err != nil {
+		log.Fatal("error while decoding response body: %v", err)
+	}
+
 	if res.StatusCode > 299 {
 		log.Fatalf(
-			"Response failed with status code: %d and\nbody: %s\n",
+			"response failed with status code: %d and\nbody: %s\n",
 			res.StatusCode,
 			body,
 		)
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%s", body)
+	fmt.Printf("%v", results)
 }
