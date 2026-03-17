@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	protocol := "http"
-	domain := "www.google.com"
-	path := "/robots.txt"
+	protocol := "https"
+	domain := "pokeapi.co"
+	path := "/api/v2/location-area/"
 
 	url := fmt.Sprintf(
 		"%s://%s%s",

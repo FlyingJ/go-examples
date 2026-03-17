@@ -10,14 +10,14 @@ import (
 
 func main() {
 	type resultsElement struct {
-		name string
-		url string
+		name string "json:`name`"
+		url string "json: `url`"
 	}
 	type responseStruct struct {
-		count int
-		next string
-		previous string
-		results []resultsElement
+		count int "json:`count`"
+		next string "json:`next`"
+		previous string "json:`previous`"
+		results []resultsElement "json:`results`"
 	}
 
 	url := "https://pokeapi.co/api/v2/location-area/"
@@ -26,19 +26,20 @@ func main() {
 		log.Fatal(err)
 	}
 	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 	
 	var response responseStruct
 	decoder := json.NewDecoder(res.Body)
 	err = decoder.Decode(&response)
 	if err != nil {
-		log.Fatal("error while decoding response body: %v", err)
+		log.Fatalf("error while decoding response body: %s", err)
 	}
 
-	if res.StatusCode > 299 {
-		body, err := io.ReadAll(res.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
+	if res.StatusCode > 299 {	
 		log.Fatalf(
 			"response failed with status code: %d and\nbody: %s\n",
 			res.StatusCode,
@@ -47,5 +48,7 @@ func main() {
 	}
 	
 	fmt.Println("---- Stuff ----")
+	fmt.Println(body)
+	fmt.Println("---- Things ----")
 	fmt.Printf("count: %d\n", response.count)
 }
