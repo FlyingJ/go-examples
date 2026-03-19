@@ -3,21 +3,20 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 )
 
 func main() {
-	// type resultsElement struct {
-	// 	name string "json:`name`"
-	// 	url string "json: `url`"
-	// }
-	type responseStruct struct {
-		count int "json:`count`"
-		// next string "json:`next`"
-		// previous string "json:`previous`"
-		// results []resultsElement "json:`results`"
+	type LocationAreaPointer struct {
+		Name string `json:"name"`
+		Url string `json:"url"`
+	}
+	type LocationAreaPointers struct {
+		Count int `json:"count"`
+		Next string `json:"next"`
+		Previous string `json:"previous"`
+		Results []LocationAreaPointer `json:"results"`
 	}
 
 	url := "https://pokeapi.co/api/v2/location-area/"
@@ -26,28 +25,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	body, err := io.ReadAll(res.Body)
+	var locationAreaPointers LocationAreaPointers
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&locationAreaPointers)
 	if err != nil {
-		log.Fatal(err)
-	}	
-	var response responseStruct
-	err = decoder.Decode(&response)
-	if err != nil {
-		log.Fatalf("error while decoding response body: %s", err)
+		log.Fatalf("failed to decode response body: %s", err)
 	}
-
-	res.Body.Close()
 
 	if res.StatusCode > 299 {	
-		log.Fatalf(
-			"response failed with status code: %d and\nbody: %s\n",
-			res.StatusCode,
-			body,
-		)
+		log.Fatalf("response failed with status code: %d", res.StatusCode)
 	}
 	
-	fmt.Println("---- Stuff ----")
-	fmt.Println(body)
 	fmt.Println("---- Things ----")
-	fmt.Printf("count: %d\n", response["count"])
+	fmt.Printf("%v\n", locationAreaPointers)
 }
