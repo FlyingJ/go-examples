@@ -1,3 +1,4 @@
+
 func createUser(url, apiKey string, data User) (User, error) {
     // encode our user as JSON
     jsonData, err := json.Marshal(data)

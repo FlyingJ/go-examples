@@ -1,3 +1,4 @@
+
 switch i := x.(type) {
 case nil:
 	printString("x is nil")                // type of i is type of x (interface{})
