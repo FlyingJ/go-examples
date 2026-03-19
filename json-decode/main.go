@@ -37,5 +37,11 @@ func main() {
 	}
 	
 	fmt.Println("---- Things ----")
-	fmt.Printf("%v\n", locationAreaPointers)
+	fmt.Printf("%s -> %d\n", "count", locationAreaPointers.Count)
+	fmt.Printf("%s -> %s\n", "next page", locationAreaPointers.Next)
+	fmt.Printf("%s -> %s\n", "previous page", locationAreaPointers.Previous)
+	for _, result := range locationAreaPointers.Results {
+		fmt.Printf("%s -> %s\n", "name", result.Name)
+		fmt.Printf("%s -> %s\n", "url", result.Url)
+	}
 }
