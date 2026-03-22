@@ -1,4 +1,7 @@
+package main
+
 import (
+	"pokeapi/internal/api"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -6,26 +9,27 @@ import (
 )
 
 func main() {
-	type LocationAreaPointer struct {
-		Name string `json:"name"`
-		Url string `json:"url"`
-	}
-	type LocationAreaPointers struct {
-		Count int `json:"count"`
-		Next string `json:"next"`
-		Previous string `json:"previous"`
-		Results []LocationAreaPointer `json:"results"`
-	}
-
-	url := "https://pokeapi.co/api/v2/location-area/"
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var locationAreaPointers LocationAreaPointers
+	type LocationArea struct {
+		Name string `json:"name"`
+		Url string `json:"url"`
+	}
+	type LocationAreaList struct {
+		Count int `json:"count"`
+		Next string `json:"next"`
+		Previous string `json:"previous"`
+		Results []LocationArea `json:"results"`
+	}
+
+
+
+	var locationAreas LocationAreaList
 	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&locationAreaPointers)
+	err = decoder.Decode(&locationAreas)
 	if err != nil {
 		log.Fatalf("failed to decode response body: %s", err)
 	}
@@ -34,12 +38,11 @@ func main() {
 		log.Fatalf("response failed with status code: %d", res.StatusCode)
 	}
 	
-	fmt.Println("---- Things ----")
-	fmt.Printf("%s -> %d\n", "count", locationAreaPointers.Count)
-	fmt.Printf("%s -> %s\n", "next page", locationAreaPointers.Next)
-	fmt.Printf("%s -> %s\n", "previous page", locationAreaPointers.Previous)
-	for _, result := range locationAreaPointers.Results {
-		fmt.Printf("%s -> %s\n", "name", result.Name)
-		fmt.Printf("%s -> %s\n", "url", result.Url)
+	fmt.Printf("Response from %s\n", url)
+	fmt.Printf("count    -> %d\n", locationAreas.Count)
+	fmt.Printf("next     -> %s\n", locationAreas.Next)
+	fmt.Printf("previous -> %s\n", locationAreas.Previous)
+	for _, locationArea := range locationAreas.Results {
+		fmt.Printf("name: %s -> url: %s\n", locationArea.Name, locationArea.Url)
 	}
 }
