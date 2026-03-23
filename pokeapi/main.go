@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	res, err := http.Get(url)
+	err := api.listLocationAreas()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -24,8 +24,6 @@ func main() {
 		Previous string `json:"previous"`
 		Results []LocationArea `json:"results"`
 	}
-
-
 
 	var locationAreas LocationAreaList
 	decoder := json.NewDecoder(res.Body)
