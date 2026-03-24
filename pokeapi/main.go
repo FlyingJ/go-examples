@@ -1,28 +1,26 @@
 package main
 
 import (
-	"pokeapi/internal/api"
-	"pokeapi/internal/config"
-	"encoding/json"
+	"context"
 	"fmt"
 	"log"
-	"net/http"
+
+	"pokeapi/internal/api"
+	"pokeapi/internal/config"
 )
 
 func main() {
-	err := api.listLocationAreas()
+	var cfg config.Config
+	cfg.Init()
+
+	client := api.NewClient(cfg)
+
+	locationAreas, err := client.ListLocationAreas(context.Background())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var locationAreas LocationAreaList
-	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&locationAreas)
-	if err != nil {
-		log.Fatalf("failed to decode response body: %s", err)
-	}
-
-	if res.StatusCode > 299 {	
-		log.Fatalf("response failed with status code: %d", res.StatusCode)
+	for _, area := range locationAreas.Results {
+		fmt.Println(area.Name)
 	}
 }

@@ -1,9 +1,9 @@
 package config
 
-type Config struct{
-	BaseURL string
-	APIPath string
-	Next string
+type Config struct {
+	BaseURL  string
+	APIPath  string
+	Next     string
 	Previous string
 }
 
