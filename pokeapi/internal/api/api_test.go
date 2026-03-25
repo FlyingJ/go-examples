@@ -42,20 +42,16 @@ func TestGetJSON(t *testing.T) {
 		}),
 	}
 
-	got, err := client.ListLocationAreas(context.Background())
+	err := client.ListLocationAreas(context.Background())
 	if err != nil {
 		t.Fatalf("ListLocationAreas returned error: %v", err)
 	}
 
-	if got.Count != 1 {
-		t.Fatalf("got count %d, want 1", got.Count)
+	if client.Cfg.Next != "" {
+		t.Fatalf("client.Cfg.Next not updated: %s", client.Cfg.Next)
 	}
 
-	if len(got.Results) != 1 {
-		t.Fatalf("got %d results, want 1", len(got.Results))
-	}
-
-	if got.Results[0].Name != "canalave-city-area" {
-		t.Fatalf("got result name %q, want %q", got.Results[0].Name, "canalave-city-area")
+	if client.Cfg.Previous != "" {
+		t.Fatalf("client.Cfg.Previous not empty: %s", client.Cfg.Previous)
 	}
 }

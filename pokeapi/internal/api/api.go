@@ -24,6 +24,12 @@ type APIResourceList[T any] struct {
 	Results  []T    `json:"results"`
 }
 
+func PrintNames(resources []NamedAPIResource) {
+	for _, r := range resources {
+		fmt.Println(r.Name)
+	}
+}
+
 type Client struct {
 	Cfg        Config
 	HttpClient *http.Client
@@ -72,6 +78,13 @@ func GetJSON[T any](ctx context.Context, c *Client, url string) (*T, error) {
 	return &value, nil
 }
 
-func (c *Client) ListLocationAreas(ctx context.Context) (*APIResourceList[NamedAPIResource], error) {
-	return GetJSON[APIResourceList[NamedAPIResource]](ctx, c, c.Cfg.Next)
+func (c *Client) ListLocationAreas(ctx context.Context) error {
+	res, err := GetJSON[APIResourceList[NamedAPIResource]](ctx, c, c.Cfg.Next)
+	if err != nil {
+		return fmt.Errorf("error retrieving json: %w", err)
+	}
+	c.Cfg.Previous = res.Previous
+	c.Cfg.Next = res.Next
+	PrintNames(res.Results)
+	return nil
 }
