@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"pokeapi/internal/config"
 )
 
 // PokeAPI returns a few reusable response shapes across many endpoints.
@@ -27,8 +25,8 @@ type APIResourceList[T any] struct {
 }
 
 type Client struct {
-	cfg        config.Config
-	httpClient *http.Client
+	Cfg        Config
+	HttpClient *http.Client
 }
 
 type Endpoint struct {
@@ -43,10 +41,10 @@ var endpoints = map[string]Endpoint{
 	"region":        {Path: "/region", Named: true},
 }
 
-func NewClient(cfg config.Config) *Client {
+func NewClient(cfg Config) *Client {
 	return &Client{
-		cfg:        cfg,
-		httpClient: http.DefaultClient,
+		Cfg:        cfg,
+		HttpClient: http.DefaultClient,
 	}
 }
 
@@ -56,7 +54,7 @@ func GetJSON[T any](ctx context.Context, c *Client, url string) (*T, error) {
 		return nil, fmt.Errorf("create request: %w", err)
 	}
 
-	res, err := c.httpClient.Do(req)
+	res, err := c.HttpClient.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("perform request: %w", err)
 	}
@@ -75,5 +73,5 @@ func GetJSON[T any](ctx context.Context, c *Client, url string) (*T, error) {
 }
 
 func (c *Client) ListLocationAreas(ctx context.Context) (*APIResourceList[NamedAPIResource], error) {
-	return GetJSON[APIResourceList[NamedAPIResource]](ctx, c, c.cfg.Next)
+	return GetJSON[APIResourceList[NamedAPIResource]](ctx, c, c.Cfg.Next)
 }

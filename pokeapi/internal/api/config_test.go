@@ -1,14 +1,12 @@
-package config_test
+package api_test
 
 import (
-	"pokeapi/internal/config"
+	"pokeapi/internal/api"
 	"testing"
 )
 
 func TestConfig(t *testing.T) {
-	var c config.Config
-	c.Init()
-
+	c := api.NewConfig()
 	var expectation string
 
 	expectation = "https://pokeapi.co"

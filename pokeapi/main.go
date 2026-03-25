@@ -6,14 +6,10 @@ import (
 	"log"
 
 	"pokeapi/internal/api"
-	"pokeapi/internal/config"
 )
 
 func main() {
-	var cfg config.Config
-	cfg.Init()
-
-	client := api.NewClient(cfg)
+	client := api.NewClient(api.NewConfig())
 
 	locationAreas, err := client.ListLocationAreas(context.Background())
 	if err != nil {

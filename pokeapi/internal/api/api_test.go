@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"pokeapi/internal/config"
+	"pokeapi/internal/api"
 )
 
 type roundTripFunc func(*http.Request) (*http.Response, error)
@@ -17,12 +17,12 @@ func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func TestGetJSON(t *testing.T) {
-	cfg := config.Config{
+	cfg := api.Config{
 		Next: "https://example.test/api/v2/location-area/",
 	}
 
-	client := NewClient(cfg)
-	client.httpClient = &http.Client{
+	client := api.NewClient(cfg)
+	client.HttpClient = &http.Client{
 		Transport: roundTripFunc(func(r *http.Request) (*http.Response, error) {
 			if r.Method != http.MethodGet {
 				t.Fatalf("unexpected method: %s", r.Method)
